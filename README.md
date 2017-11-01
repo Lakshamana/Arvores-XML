@@ -4,6 +4,6 @@ Trabalho de alunos de graduação em Ciência da Computação (UFPA), IV períod
 Implementações em C.
 
 # Desenvolvedores:
-  > Johabe Marques
-  > Guilherme Albuquerque (@Lakshamana).
-  > Rafael Sousa (@RafaelSou).
+  . Johabe Marques
+  . Guilherme Albuquerque (@Lakshamana).
+  . Rafael Sousa (@RafaelSou).
