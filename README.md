@@ -6,6 +6,6 @@ Implementações em C.
 # Desenvolvedores:
   <ul>
     <li>Johabe Marques;</li>
-    <li>Guilherme Albuquerque (@Lakshamana);</li>
-    <li>Rafael Sousa (@Rafael Sou).</li>
+  <li>Guilherme Albuquerque (<a href="https://github.com/Lakshamana">@Lakshamana</a>);</li>
+  <li>Rafael Sousa (<a href="https://github.com/RafaelSou">@RafaelSou</a>).</li>
   </ul>
