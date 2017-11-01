@@ -5,7 +5,7 @@ Implementações em C.
 
 # Desenvolvedores:
   <ul>
-    <li>.Johabe Marques.</li>
-    <li>.Guilherme Albuquerque (@Lakshamana).</li>
-    <li>.Rafael Sousa (@Rafael Sou).</li>
+    <li>Johabe Marques;</li>
+    <li>Guilherme Albuquerque (@Lakshamana);</li>
+    <li>Rafael Sousa (@Rafael Sou).</li>
   </ul>
