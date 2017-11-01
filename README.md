@@ -1,6 +1,6 @@
 # Árvores-XML
 Leitor e criador de estruturas de árvores em XML
-Trabalho de alunos de graduação em Ciência da Computação (UFPA), IV período, Projeto de Algoritmos II.
+Trabalho de alunos de graduação em Ciência da Computação (UFPA), <br/>IV período, Projeto de Algoritmos II.
 <br/>Implementações em C.
 
 # Desenvolvedores:
