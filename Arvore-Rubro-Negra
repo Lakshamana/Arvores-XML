@@ -1,0 +1,409 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct ARVORE{
+    int numero_arvore;
+    char cor;
+    struct ARVORE *pai, *esquerda, *direita;
+}NO;
+
+
+NO *vazio = NULL;
+// Rotação Simples a Esquerda do Nó ///////////////////////////////////////////////////////////////////////
+void RSE(NO **Arv, NO *noh){
+    NO *y;
+
+    if(((*Arv)->pai == vazio) && (noh->direita != vazio)){
+        y = noh->direita;
+        noh->direita = y->esquerda;
+        y->esquerda->pai = noh;
+        y->pai = noh->pai;
+
+        if(noh->pai == vazio){
+            *Arv = y;
+        }
+        else if(noh == noh->pai->esquerda){
+            noh->pai->esquerda = y;
+        }
+        else noh->pai->direita = y;
+    }
+    y->esquerda = noh;
+    noh->pai = y;
+    (*Arv)->pai = vazio;
+}
+
+//Rotação Simples a Direita do NÓ//////////////////////////////////////////////////////////////////////////
+void RSD(NO **Arv, NO *noh){
+    NO *y;
+
+    if(((*Arv)->pai == vazio) && (noh->esquerda != vazio)){
+        y = noh->esquerda;
+        noh->esquerda = y->direita;
+        y->direita->pai = noh;
+        y->pai = noh->pai;
+
+        if(noh->pai == vazio){
+            *Arv = y;
+        }
+        else if(noh == noh->pai->direita){
+            noh->pai->direita = y;
+        }
+        else noh->pai->esquerda = y;
+    }
+    y->direita = noh;
+    noh->pai = y;
+    (*Arv)->pai = vazio;
+}
+
+// Insere a Cor do NÓ e faz o balaceamento caso necessário ////////////////////////////////////////////////
+void inserirCor(NO **Arv, NO *noh){
+    NO *y;
+
+    while(noh->pai->cor == 'V'){
+        if(noh->pai == noh->pai->pai->esquerda){
+            y = noh->pai->pai->direita;
+
+            if(y->cor == 'V'){
+                noh->pai->cor = 'P';
+                y->cor = 'P';
+                noh->pai->pai->cor = 'V';
+                noh = noh->pai->pai;
+            }
+            else{
+                if(noh == noh->pai->direita){
+                    noh = noh->pai;
+                    RSE(&(*Arv), noh);
+                }
+
+                noh->pai->cor = 'P';
+                noh->pai->pai->cor = 'V';
+                RSD(&(*Arv), noh->pai->pai);
+            }
+        }
+        else{
+            y = noh->pai->pai->esquerda;
+
+            if(y->cor == 'V'){
+                noh->pai->cor = 'P';
+                y->cor = 'P';
+                noh->pai->pai->cor = 'V';
+                noh = noh->pai->pai;
+            }
+            else{
+                if(noh == noh->pai->esquerda){
+                    noh = noh->pai;
+                    RSD(&(*Arv), noh);
+                }
+
+                noh->pai->cor = 'P';
+                noh->pai->pai->cor = 'V';
+                RSE(&(*Arv), noh->pai->pai);
+            }
+        }
+    }
+
+    (*Arv)->cor = 'P';
+}
+
+// Insere um novo NÓ na Árvore ////////////////////////////////////////////////////////////////////////////
+NO* inserir(NO **Arv, NO *noh){ 
+    NO *y = vazio;
+    NO *x = *Arv;
+
+    if((*Arv)== NULL){// Verifica se a Árvore é NULL
+        *Arv = noh;
+        (*Arv)->pai = vazio;
+        vazio->pai = *Arv;
+        (*Arv)->cor = 'P';
+        return;
+    }
+
+    if((*Arv)->numero_arvore == noh->numero_arvore){
+        printf(" Numero duplicado, Coloque outro numero !!\n\n");
+        return;
+    }
+
+    while(x != vazio){
+        y = x;
+        if(noh->numero_arvore < x->numero_arvore){
+            x = x->esquerda;
+        }
+        else x = x->direita;
+    }
+
+    noh->pai = y;
+
+    if(noh->numero_arvore < y->numero_arvore){
+        y->esquerda = noh;
+    }
+    else if(noh->numero_arvore > y->numero_arvore){
+        y->direita = noh;
+    }
+    else if(noh->numero_arvore == y->numero_arvore){
+        printf("Numeros iguais, Tente outro numero !!\n\n");
+    }
+
+    noh->esquerda = vazio;
+    noh->direita = vazio;
+    noh->cor = 'V';
+
+    inserirCor(&(*Arv), noh);
+    return noh;
+}
+
+
+// Faz o balaceamento da cor caso tenha alguma incosistencia //////////////////////////////////////////////
+void removerCor(NO **Arv, NO *noh){
+    NO *aux;
+
+    while(((*Arv) != noh) && (noh->cor == 'P')){
+        if(noh == noh->pai->esquerda){
+            aux = noh->pai->direita;
+
+            if(aux->cor == 'V'){
+                aux->cor = 'P';
+                noh->pai->cor = 'V';
+                RSE(&(*Arv), noh->pai);
+                aux = noh->pai->direita;
+            }
+
+            if((aux->esquerda->cor == 'P') && (aux->direita->cor == 'P')){
+                aux->cor = 'V';
+                noh = noh->pai;
+            }else if(aux->direita->cor == 'P'){
+                aux->esquerda->cor = 'P';
+                aux->cor = 'V';
+                RSD(&(*Arv), aux);
+                aux = noh->pai->direita;
+                aux->cor = noh->pai->cor;
+                noh->pai->cor = 'P';
+                aux->direita->cor = 'P';
+                RSE(&(*Arv), noh->pai);
+                noh = *Arv;
+            }
+        }else{
+            aux = noh->pai->esquerda;
+
+            if(aux->cor == 'V'){
+                aux->cor = 'P';
+                noh->pai->cor = 'V';
+                RSD(&(*Arv), noh->pai);
+                aux = noh->pai->esquerda;
+            }
+
+            if((aux->esquerda->cor == 'P') && (aux->direita->cor == 'P')){
+                aux->cor = 'V';
+                noh = noh->pai;
+            }else if(aux->esquerda->cor == 'P'){
+                aux->direita->cor = 'P';
+                aux->cor = 'V';
+                RSE(&(*Arv), aux);
+                aux = noh->pai->esquerda;
+                aux->cor = noh->pai->cor;
+                noh->pai->cor = 'P';
+                aux->esquerda->cor = 'P';
+                RSD(&(*Arv), noh->pai);
+                noh = *Arv;
+            }
+        }
+    }
+    noh->cor = 'P';
+}
+
+// Máximo da Árvore ///////////////////////////////////////////////////////////////////////////////////////
+NO* maximo(NO *noh){
+    while(noh->direita != vazio){
+        noh = noh->direita;
+    }
+    return noh;
+}
+
+
+// Mínimo da Árvore ///////////////////////////////////////////////////////////////////////////////////////
+NO* minimo(NO *noh){
+    while(noh->esquerda != vazio){
+        noh = noh->esquerda;
+    }
+    return noh;
+}
+
+
+// Sucessor do NÓ para o balaceamento /////////////////////////////////////////////////////////////////////
+NO* NO_sucessor(NO *noh){
+    NO *aux;
+
+    if(noh->direita != vazio){
+        return minimo(noh->direita);
+    }
+
+    aux = noh->pai;
+
+    while((aux != vazio) && (noh == aux->direita)){
+        noh = aux;
+        aux = aux->pai;
+    }
+	return aux;
+}
+
+
+// Cria o NÓ para a Árvore ////////////////////////////////////////////////////////////////////////////////
+NO* criar_NO(){
+    NO *novo;
+    novo = (NO*)malloc(sizeof(NO));
+    printf("Informe um nÚmero para a Árvore...: ");
+    scanf("%d", &novo->numero_arvore);
+    
+    if(novo->numero_arvore < 0){
+        printf("!!!Número Invalido!!! Tente Novamente !!!\n");
+        return criar_NO();
+    }
+    novo->cor = 'V'; // todo novo NÓ é vermelho
+    novo->pai = vazio;
+    novo->direita = vazio;
+    novo->esquerda = vazio;
+
+    return novo;
+}
+
+
+// Listagem dos dados /////////////////////////////////////////////////////////////////////////////////////
+void imprimir(NO* Arv){
+	printf("<");
+    if (Arv != vazio){
+    	if(Arv->cor == 'V'){
+    		//system("color 04");
+    		printf("%dV",Arv->numero_arvore);	
+		}else{
+			//system("color 08");
+			printf("%dP",Arv->numero_arvore);	
+		}
+		imprimir(Arv->esquerda);
+        imprimir(Arv->direita);
+    }
+    printf(">");
+}
+
+
+
+// Menu do Usuario //////////////////////////////////////////////////////////////////////////////////////// 
+int menu(void){
+    int op;
+
+    printf("\n\n1.Inserir NO..........:\n");
+    printf("2.Imprimir Arvore.........:\n");
+    printf("3.Remover NO da Arvore....:\n");
+    printf("0.Sair do programa........:\n\n");
+    printf("-OPCAO: "); scanf("%d", &op);
+    return op;
+}
+
+
+// Localizar o NÓ da Árvore ///////////////////////////////////////////////////////////////////////////////
+NO* localizar_NO(NO* ptr, int numero_arvore){
+    if ((ptr == vazio) || (ptr->numero_arvore == numero_arvore)){
+        return ptr;
+    }
+
+    if (numero_arvore < ptr->numero_arvore)
+    {
+        return localizar_NO(ptr->esquerda, numero_arvore);
+    }
+    else
+    {
+        return localizar_NO(ptr->direita, numero_arvore);
+    }
+}
+
+// Remove um NÓ da Árvore /////////////////////////////////////////////////////////////////////////////////
+NO *remover(NO **Arv, NO *ptr){
+    NO *y, *x;
+
+    if((ptr->esquerda == vazio) || (ptr->direita == vazio)){
+        y = ptr;
+    }else y = NO_sucessor(ptr);
+
+
+    if(y->esquerda != vazio){
+        x = y->esquerda;
+    }else x = y->direita;
+
+    x->pai = y->pai;
+
+	if(y->pai == vazio){
+        *Arv = x;
+    }else if(y == y->pai->esquerda){
+        y->pai->esquerda = x;
+    }else y->pai->direita = x;
+
+
+    if(y != ptr){
+        ptr->numero_arvore = y->numero_arvore;//Aqui os dados são transferidos
+    }
+
+    if(y->cor == 'P'){
+        if((*Arv)->direita == vazio && (*Arv)->esquerda->direita != vazio){
+            RSE(&(*Arv), (*Arv)->esquerda);
+            removerCor(&(*Arv), (*Arv)->esquerda);
+            RSD(&(*Arv), (*Arv));
+        }else{
+            if((*Arv)->esquerda == vazio && (*Arv)->direita->esquerda != vazio){
+                RSD(&(*Arv), (*Arv)->direita);
+                removerCor(&(*Arv), (*Arv)->direita);
+                RSE(&(*Arv), (*Arv));
+            }
+        }
+        removerCor(&(*Arv), x);
+    }
+    return y;
+    free(y);
+    free(x);
+}
+
+
+int main(void){
+	
+	NO *Arv = NULL; //Ponteiro Principal(Árvore).
+	NO *aux;
+    int valor, altura, opc;
+
+    vazio = (NO*)malloc(sizeof(NO));
+    vazio->pai = Arv;
+    vazio->direita = vazio->esquerda = vazio;
+
+    do{
+        opc = menu();
+        switch (opc){
+
+        case 1:
+            inserir(&Arv, criar_NO());
+            break;
+        case 2:
+            printf("Listagem dos ptrs da Arvore \n\n");
+            if(Arv != NULL){
+                imprimir(Arv);
+            }else printf("Sem Elementos na Arvore \n");
+            break;
+        case 3:
+            if(Arv != NULL){
+                printf("Digite o numero para ser removido da Arvore: "); scanf("%d", &valor);
+                aux = localizar_NO(Arv, valor);
+                if (aux->numero_arvore == valor){
+                    imprimir(aux);
+                    remover(&Arv, aux);
+                }else printf("\nO numero %d nao encontrada!\n\n", valor);
+                
+                if(Arv == vazio){
+                    vazio = (NO*)malloc(sizeof(NO));
+                    vazio->pai = Arv = NULL;
+                    vazio->direita = vazio->esquerda = vazio;
+                }
+            }else printf("Sem Elementos na Arvore \n");
+            break;
+        default:
+      		printf("Comando INVALIDO!!\n");
+      		break;    
+        }
+    }
+    while (opc != 0);
+    return 0;
+}
