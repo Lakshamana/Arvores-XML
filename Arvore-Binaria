@@ -1,0 +1,175 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct ARVORE{
+	struct ARVORE *dir,*esq;
+	int valor;
+}NO;
+
+// Menu do Usuario //////////////////////////////////////////////////////////////////////////////////////// 
+int menu(void){
+    int op;
+
+    printf("\n\n1.Inserir NO......................:\n");
+    printf("2.Imprimir Arvore Pre-Ordem.......:\n");
+    printf("3.Imprimir Arvore Intra-Ordem.....:\n");
+    printf("4.Imprimir Arvore Pos-Ordem.......:\n");
+    printf("5.Remover NO......................:\n");
+    printf("0.Sair do programa ...............:\n\n");
+    printf("-OPCAO: "); scanf("%d", &op);
+    return op;
+}
+
+
+// Insere os elementos de acordo com a regra de balanceamento /////////////////////////////////////////////
+void inserir(NO **ptr, int x){
+	NO *p=(NO*)malloc(sizeof(NO));
+	p->valor=x;
+	p->esq=p->dir=NULL;
+	
+	if(*ptr==NULL){
+		*ptr=p;
+	}else{		
+		if( x < (*ptr)->valor){
+			inserir(&(*ptr)->esq, x);	
+		}
+		if( x > (*ptr)->valor){
+			inserir(&(*ptr)->dir, x);	
+		}	
+	}
+} 
+
+// Imprimi a Árvore em Pre-Ordem //////////////////////////////////////////////////////////////////////////
+void pre_ordem(NO *arv){
+	printf("<");
+	if(arv!=NULL){
+		printf("%d",arv->valor);
+		pre_ordem(arv->esq);
+		pre_ordem(arv->dir);	
+	}
+	printf(">");	
+
+}
+// Imprimi a Árvore em intra-Ordem ////////////////////////////////////////////////////////////////////////
+void intra_ordem(NO *arv){
+	printf("<");
+	if(arv!=NULL){
+		intra_ordem(arv->esq);
+		printf("%d",arv->valor);
+		intra_ordem(arv->dir);	
+	}
+	printf(">");	
+}
+
+// Imprimi a Árvore em Pós-Ordem //////////////////////////////////////////////////////////////////////////
+void pos_ordem(NO *arv){
+	printf("<");
+	if(arv!=NULL){
+		pos_ordem(arv->esq);
+		pos_ordem(arv->dir);
+		printf("%d",arv->valor);	
+	}
+	printf(">");	
+}
+
+// Acha o NÓ com o maior valor ////////////////////////////////////////////////////////////////////////////
+NO* maximo(NO *arv){
+	if(arv!=NULL){
+		while(arv->dir!=NULL){
+			arv=arv->dir;
+		}
+	}
+	return arv;	
+}
+
+// Acha o NÓ com o menor valor ////////////////////////////////////////////////////////////////////////////
+NO* minimo(NO *arv){
+	if(arv!=NULL){
+		while(arv->esq!=NULL){
+			arv=arv->esq;
+		}
+	}
+	return arv;
+}
+
+// Remover um NÓ dá Árvore ////////////////////////////////////////////////////////////////////////////////
+void remover(NO **arv, int x){
+	NO *aux;
+	if((*arv)!=NULL){
+		if(x < (*arv)->valor){
+			remover(&((*arv)->esq), x); // faz recursividade á esquerda   
+       }else{   
+            // se o valor que será removido for maior que o nó atual,   
+            if(x > (*arv)->valor){    
+                 remover(&((*arv)->dir), x); // faz recursividade á direita.   
+             }else{ // encontrou   
+                // quando o nó a ser removido for encontrado,   
+                if(((*arv)->esq)!=NULL && ((*arv)->dir)!=NULL ){    
+                     // verificamos se os nós filhos da esquerda e direita não são null.   
+                     // se não forem null, buscamos o menor nó a partir do nó da direita.   
+                     aux = minimo((*arv)->dir);    
+                     (*arv)->valor = (aux->valor);   
+                     remover(&(*arv)->dir, (*arv)->valor);   
+                }else{    
+                       // caso os nó da direita e da esqueda, ou somente o da direita for null,    
+                       // precisamos apenas remover   
+                       aux = *arv;    
+                       // o nó atual e fazer ajustar os ponteiros    
+                       if(((*arv)->esq)==NULL){    
+                           // se o nó da esquerda for vazio   
+                           // o nó pai do atual, apontará para o filho da direita do nó atual.   
+                           *arv = (*arv)->dir;   
+                       }    
+                       else {   
+                            // se o nó da esquerda não for vazio.   
+                            // o nó pai do atual, apontará para o filho da esquerda do nó atual.   
+                            *arv = (*arv)->esq;                          
+                       }   
+                free(aux);   
+                }   
+            }        
+       }    
+    }     
+}
+int main(void) {
+	NO *arv=NULL;
+	int add,rmv,opc;
+	
+	do{
+        opc = menu();
+        switch (opc){
+
+        case 1:
+        	printf("Informe um numero para inserir na Arvore: "); scanf("%d", &add);
+        	inserir(&arv, add);
+            break;
+        case 2:
+            printf("Listagem dos ptrs da Arvore em Pre-Ordem: \n\n");
+            if(arv != NULL){
+                pre_ordem(arv);
+            }else printf("Sem Elementos na Arvore. \n");
+            break;
+        case 3:
+            printf("Listagem dos ptrs da Arvore em Intra-Ordem: \n\n");
+            if(arv != NULL){
+                pre_ordem(arv);
+            }else printf("Sem Elementos na Arvore. \n");
+            break;
+        case 4:
+            printf("Listagem dos ptrs da Arvore em Pos-Ordem: \n\n");
+            if(arv != NULL){
+                pos_ordem(arv);
+            }else printf("Sem Elementos na Arvore. \n");
+            break; 
+		case 5:
+			printf("Informe um numero para remover da Arvore: "); scanf("%d", &rmv);
+        	remover(&arv, rmv);
+			break;	   
+        default:
+      		printf("Comando INVALIDO!!\n");
+      		break;    
+        }
+    }
+    while (opc != 0);
+	return 0;
+}
