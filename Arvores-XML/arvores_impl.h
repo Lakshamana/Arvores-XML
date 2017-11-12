@@ -1,3 +1,13 @@
+/*
+## Universidade Federal da Bahia
+## Docente: Danilo Azevedo
+## Bacharelado em Ciencia da Computação - Estrutura de Dados II
+
+Chaves testadas: 20,40,10,30,15,35,7,26,18,22,5,42,13,27,8,32,38,24,45,25.
+*/
+
+// Enviado por LaKshamana (@LaKshamana)
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <malloc.h>
