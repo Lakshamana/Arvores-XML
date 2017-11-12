@@ -359,18 +359,17 @@ NO *remover(NO **Arv, NO *ptr){
     free(x);
 }
 
-
-int main(void){
-	
+// Menu de nterações com o usuário //////////////////////////////////////////////////////////////////////////
+void MENU_inter(){
 	NO *Arv = NULL; //Ponteiro Principal(Árvore).
 	NO *aux;
-    int valor, altura, opc;
-
+    
     vazio = (NO*)malloc(sizeof(NO));
     vazio->pai = Arv;
     vazio->direita = vazio->esquerda = vazio;
-
-    do{
+    
+	int valor, altura, opc;
+	do{
         opc = menu();
         switch (opc){
 
@@ -405,5 +404,12 @@ int main(void){
         }
     }
     while (opc != 0);
+}
+
+int main(void){
+	
+	MENU_inter();
+    
     return 0;
+
 }
