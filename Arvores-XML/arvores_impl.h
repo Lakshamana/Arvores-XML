@@ -1,15 +1,3 @@
-/*
-## Universidade Federal da Bahia
-## Docente: Danilo Azevedo
-## Bacharelado em Ciencia da Computacao - Estrutura de Dados II
-
-chaves testadas: 20,40,10,30,15,35,7,26,18,22,
-5,42,13,46,27,8,32,38,24,45,25
-
- */
-
-//Enviado por Lakshamana (@Lakshamana)
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <malloc.h>
@@ -70,6 +58,19 @@ void recuperarReg(Apontador *arv, node *LISTA);
 void insereInicio(Registro info, node *LISTA);
 void execut(Registro info, node *LISTA);
 void exibe(node *LISTA);
+
+int menu_b(void){
+    int op;
+	printf("\n[MENU ARVORE B]\n");
+    printf("1.Inserir NO......................:\n");
+    printf("2.Remover NO......................:\n");
+    printf("3.Imprimir em intra-Ordem.........:\n");
+    printf("4.Buscar elemento.................:\n");
+    printf("5.Imprimir de outra forma.........:\n");
+    printf("0.Sair do programa ...............:\n\n");
+    printf("-OPCAO: "); scanf("%d", &op);
+    return op;
+}
 
 typedef Apontador TipoDicionario;
 void Inicializa(TipoDicionario *Dicionario)
@@ -710,13 +711,10 @@ void execut(Registro info, node *LISTA)
     insereInicio(info, LISTA);
     }
 
-//############################# //Estrutura 2 lista encadeada
-
-int main()
-{
-  Apontador *arv;
+void MENU_B(){
+	Apontador *arv;
   Registro reg;
-  char tecla;
+  int tecla;
   int chave, i, num = 0;
   arv=(Apontador*) malloc(sizeof(Apontador));
   node *LISTA = (node *) malloc(sizeof(node));
@@ -726,74 +724,76 @@ int main()
         recuperarReg(arv, LISTA);
         }
 
-  while(1)
+  do
   {
-    scanf("%c", &tecla);
-    if (tecla=='e')
-      break;
-    switch(tecla)
+  	tecla = menu_b();
+	switch(tecla)
     {
-      case 'i':
+    case 1:
       //printf("insercao \n");
-           scanf("%d", &chave);
-           reg.chave = chave;
-           count++;
-           reg.rank = count;
-           fflush(stdin);
-           getchar();
-           fgets(reg.nome, sizeof(reg.nome), stdin);
-           scanf("%d", ®.idade);
-           if (reg.chave <= 0){
-               count--;
+        scanf("%d", &chave);
+        reg.chave = chave;
+        count++;
+        reg.rank = count;
+        fflush(stdin);
+        getchar();
+        fgets(reg.nome, sizeof(reg.nome), stdin);
+        scanf("%d", reg.idade);
+        if (reg.chave <= 0){
+            count--;
             break;
-            }
-            Insere(reg,arv);
-      break;
-      case 'r':
-           scanf("%d", &chave);
-           reg.chave = chave;
-           Retira(reg.chave, arv);
-           remove(namefile);
-            saveAux(*arv,2*ORDEM);
-      break;
-      case 'o':
-            em_ordem(*arv);
-      break;
-      case 'p':
-      for(i=0; i < 2*ORDEM; i++){
+        }
+        Insere(reg,arv);
+      	break;
+    case 2:
+        scanf("%d", &chave);
+		reg.chave = chave;
+        Retira(reg.chave, arv);
+        remove(namefile);
+        saveAux(*arv,2*ORDEM);
+        break;
+    case 3:
+        em_ordem(*arv);
+        break;
+    case 5:
+      	for(i=0; i < 2*ORDEM; i++){
             num = Imprime2(*arv, i, 0, num);
-      }
-      break;
-      case 'c':
-      getchar();
-      scanf("%d", &chave);
-      reg.chave = chave;
-      Busca(reg,*arv);
-      break;
+     	}
+     	break;
+    case 4:
+      	getchar();
+    	scanf("%d", &chave);
+      	reg.chave = chave;
+      	Busca(reg,*arv);
+      	break;
+    case 0:
+		break;  	
+    default:
+		printf("Comando invalido.. tente novamente.");
+		break;  	
     }
 
     fflush(stdin);
-  }
-  return 0;
-  }
+  }while(tecla!=0);
+}
 
-//##############################################
 
-//Árvore-Binária: enviado por Rafael Sousa (@RafaSou)
 
-#include <stdio.h>
-#include <stdlib.h>
+// Fim da Árvore B ########################################################################################################################################
 
-typedef struct ARVORE{
-	struct ARVORE *dir,*esq;
+//Árvore-Binária ##########################################################################################################################################
+//enviado por Rafael Sousa (@RafaSou)
+
+typedef struct ARVORE_BINARIA{
+	struct ARVORE_BINARIA *dir,*esq;
 	int valor;
-}NO;
+}NB;
 
 // Menu do Usuario ////////////////////////////////////////////////////////////////////////////////////////
-int menu(void){
+int menu_bi(void){
     int op;
-
-    printf("\n\n1.Inserir NO......................:\n");
+	printf("\n[MENU ARVORE BINARIA]\n");
+    printf("1.Inserir NO......................:\n");
     printf("2.Imprimir Arvore Pre-Ordem.......:\n");
     printf("3.Imprimir Arvore Intra-Ordem.....:\n");
     printf("4.Imprimir Arvore Pos-Ordem.......:\n");
@@ -805,8 +805,8 @@ int menu(void){
 
 
 // Insere os elementos de acordo com a regra de balanceamento /////////////////////////////////////////////
-void inserir(NO **ptr, int x){
-	NO *p=(NO*)malloc(sizeof(NO));
+void inserir_bi(NB **ptr, int x){
+	NB *p=(NB*)malloc(sizeof(NB));
 	p->valor=x;
 	p->esq=p->dir=NULL;
 
@@ -814,49 +814,49 @@ void inserir(NO **ptr, int x){
 		*ptr=p;
 	}else{
 		if( x < (*ptr)->valor){
-			inserir(&(*ptr)->esq, x);
+			inserir_bi(&(*ptr)->esq, x);
 		}
 		if( x > (*ptr)->valor){
-			inserir(&(*ptr)->dir, x);
+			inserir_bi(&(*ptr)->dir, x);
 		}
 	}
 }
 
 // Imprimi a Árvore em Pre-Ordem //////////////////////////////////////////////////////////////////////////
-void pre_ordem(NO *arv){
+void pre_ordem_bi(NB *arv){
 	printf("<");
 	if(arv!=NULL){
 		printf("%d",arv->valor);
-		pre_ordem(arv->esq);
-		pre_ordem(arv->dir);
+		pre_ordem_bi(arv->esq);
+		pre_ordem_bi(arv->dir);
 	}
 	printf(">");
 
 }
 // Imprimi a Árvore em intra-Ordem ////////////////////////////////////////////////////////////////////////
-void intra_ordem(NO *arv){
+void intra_ordem_bi(NB *arv){
 	printf("<");
 	if(arv!=NULL){
-		intra_ordem(arv->esq);
+		intra_ordem_bi(arv->esq);
 		printf("%d",arv->valor);
-		intra_ordem(arv->dir);
+		intra_ordem_bi(arv->dir);
 	}
 	printf(">");
 }
 
 // Imprimi a Árvore em Pós-Ordem //////////////////////////////////////////////////////////////////////////
-void pos_ordem(NO *arv){
+void pos_ordem_bi(NB *arv){
 	printf("<");
 	if(arv!=NULL){
-		pos_ordem(arv->esq);
-		pos_ordem(arv->dir);
+		pos_ordem_bi(arv->esq);
+		pos_ordem_bi(arv->dir);
 		printf("%d",arv->valor);
 	}
 	printf(">");
 }
 
 // Acha o NÓ com o maior valor ////////////////////////////////////////////////////////////////////////////
-NO* maximo(NO *arv){
+NB* maximo_bi(NB *arv){
 	if(arv!=NULL){
 		while(arv->dir!=NULL){
 			arv=arv->dir;
@@ -866,7 +866,7 @@ NO* maximo(NO *arv){
 }
 
 // Acha o NÓ com o menor valor ////////////////////////////////////////////////////////////////////////////
-NO* minimo(NO *arv){
+NB* minimo_bi(NB *arv){
 	if(arv!=NULL){
 		while(arv->esq!=NULL){
 			arv=arv->esq;
@@ -876,23 +876,23 @@ NO* minimo(NO *arv){
 }
 
 // Remover um NÓ dá Árvore ////////////////////////////////////////////////////////////////////////////////
-void remover(NO **arv, int x){
-	NO *aux;
+void remover_bi(NB **arv, int x){
+	NB *aux;
 	if((*arv)!=NULL){
 		if(x < (*arv)->valor){
-			remover(&((*arv)->esq), x); // faz recursividade á esquerda
+			remover_bi(&((*arv)->esq), x); // faz recursividade á esquerda
        }else{
             // se o valor que será removido for maior que o nó atual,
             if(x > (*arv)->valor){
-                 remover(&((*arv)->dir), x); // faz recursividade á direita.
+                 remover_bi(&((*arv)->dir), x); // faz recursividade á direita.
              }else{ // encontrou
                 // quando o nó a ser removido for encontrado,
                 if(((*arv)->esq)!=NULL && ((*arv)->dir)!=NULL ){
                      // verificamos se os nós filhos da esquerda e direita não são null.
                      // se não forem null, buscamos o menor nó a partir do nó da direita.
-                     aux = minimo((*arv)->dir);
+                     aux = minimo_bi((*arv)->dir);
                      (*arv)->valor = (aux->valor);
-                     remover(&(*arv)->dir, (*arv)->valor);
+                     remover_bi(&(*arv)->dir, (*arv)->valor);
                 }else{
                        // caso os nó da direita e da esqueda, ou somente o da direita for null,
                        // precisamos apenas remover
@@ -914,56 +914,56 @@ void remover(NO **arv, int x){
        }
     }
 }
-int main(void) {
-	NO *arv=NULL;
+
+void MENU_BINARIA(){
+	NB *arv=NULL;
 	int add,rmv,opc;
 
 	do{
-        opc = menu();
+        opc = menu_bi();
         switch (opc){
 
         case 1:
         	printf("Informe um numero para inserir na Arvore: "); scanf("%d", &add);
-        	inserir(&arv, add);
+        	inserir_bi(&arv, add);
             break;
         case 2:
             printf("Listagem dos ptrs da Arvore em Pre-Ordem: \n\n");
             if(arv != NULL){
-                pre_ordem(arv);
+                pre_ordem_bi(arv);
             }else printf("Sem Elementos na Arvore. \n");
             break;
         case 3:
             printf("Listagem dos ptrs da Arvore em Intra-Ordem: \n\n");
             if(arv != NULL){
-                pre_ordem(arv);
+                pre_ordem_bi(arv);
             }else printf("Sem Elementos na Arvore. \n");
             break;
         case 4:
             printf("Listagem dos ptrs da Arvore em Pos-Ordem: \n\n");
             if(arv != NULL){
-                pos_ordem(arv);
+                pos_ordem_bi(arv);
             }else printf("Sem Elementos na Arvore. \n");
             break;
 		case 5:
 			printf("Informe um numero para remover da Arvore: "); scanf("%d", &rmv);
-        	remover(&arv, rmv);
+        	remover_bi(&arv, rmv);
 			break;
+		case 0:
+			break;	
         default:
       		printf("Comando INVALIDO!!\n");
       		break;
         }
     }
     while (opc != 0);
-	return 0;
 }
 
-//Fim da Àrvore-Binária
 
-//Árvore-Rubro-Negra
+//Fim da Àrvore-Binária ####################################################################################################################################
+
+//Árvore-Rubro-Negra #######################################################################################################################################
 //Enviado por Rafael Sousa (@RafaelSou)
-
-#include<stdio.h>
-#include<stdlib.h>
 
 typedef struct ARVORE{
     int numero_arvore;
@@ -1070,7 +1070,7 @@ void inserirCor(NO **Arv, NO *noh){
 }
 
 // Insere um novo NÓ na Árvore ////////////////////////////////////////////////////////////////////////////
-NO* inserir(NO **Arv, NO *noh){
+NO* inserir(NO **Arv, NO *noh){ 
     NO *y = vazio;
     NO *x = *Arv;
 
@@ -1216,7 +1216,7 @@ NO* criar_NO(){
     novo = (NO*)malloc(sizeof(NO));
     printf("Informe um nÚmero para a Árvore...: ");
     scanf("%d", &novo->numero_arvore);
-
+    
     if(novo->numero_arvore < 0){
         printf("!!!Número Invalido!!! Tente Novamente !!!\n");
         return criar_NO();
@@ -1236,10 +1236,10 @@ void imprimir(NO* Arv){
     if (Arv != vazio){
     	if(Arv->cor == 'V'){
     		//system("color 04");
-    		printf("%dV",Arv->numero_arvore);
+    		printf("%dV",Arv->numero_arvore);	
 		}else{
 			//system("color 08");
-			printf("%dP",Arv->numero_arvore);
+			printf("%dP",Arv->numero_arvore);	
 		}
 		imprimir(Arv->esquerda);
         imprimir(Arv->direita);
@@ -1249,11 +1249,11 @@ void imprimir(NO* Arv){
 
 
 
-// Menu do Usuario ////////////////////////////////////////////////////////////////////////////////////////
+// Menu do Usuario //////////////////////////////////////////////////////////////////////////////////////// 
 int menu(void){
     int op;
-
-    printf("\n\n1.Inserir NO..........:\n");
+	printf("\n[MENU ARVORE RUBRO-NEGRA]\n");
+    printf("1.Inserir NO.............:\n");
     printf("2.Imprimir Arvore.........:\n");
     printf("3.Remover NO da Arvore....:\n");
     printf("0.Sair do programa........:\n\n");
@@ -1323,18 +1323,17 @@ NO *remover(NO **Arv, NO *ptr){
     free(x);
 }
 
-
-int main(void){
-
+// Menu de nterações com o usuário //////////////////////////////////////////////////////////////////////////
+void MENU_RN(){
 	NO *Arv = NULL; //Ponteiro Principal(Árvore).
 	NO *aux;
-    int valor, altura, opc;
-
+    
     vazio = (NO*)malloc(sizeof(NO));
     vazio->pai = Arv;
     vazio->direita = vazio->esquerda = vazio;
-
-    do{
+    
+	int valor, altura, opc;
+	do{
         opc = menu();
         switch (opc){
 
@@ -1355,7 +1354,7 @@ int main(void){
                     imprimir(aux);
                     remover(&Arv, aux);
                 }else printf("\nO numero %d nao encontrada!\n\n", valor);
-
+                
                 if(Arv == vazio){
                     vazio = (NO*)malloc(sizeof(NO));
                     vazio->pai = Arv = NULL;
@@ -1363,12 +1362,48 @@ int main(void){
                 }
             }else printf("Sem Elementos na Arvore \n");
             break;
+		case 0:
+			break;	    
         default:
       		printf("Comando INVALIDO!!\n");
-      		break;
+      		break;    
         }
     }
     while (opc != 0);
-    return 0;
 }
 
+int menu_escolha_de_arvore(){
+	int op;
+	
+	printf("\n[MENU DE ESCOLHA DE ARVORE]\n");
+    printf("1.Arvore Binaria.............:\n");
+    printf("2.Arvore Rubro Negra.........:\n");
+    printf("3.Arvore B...................:\n");
+    printf("0.Sair do programa............:\n\n");
+    printf("-OPCAO: "); scanf("%d", &op);
+    return op;
+}
+int main(void){
+	int x;
+	
+	do{
+		x=menu_escolha_de_arvore();
+		switch(x){
+			case 1:
+				MENU_BINARIA();
+				break;
+			case 2:
+				MENU_RN();
+				break;
+			case 3:
+				MENU_B();
+				break;	
+			case 0:
+				break;		
+			default:
+				printf("Comando invalido... tente novamente.");
+				break;				
+		}
+	}while(x!=0);
+    return 0;
+}
